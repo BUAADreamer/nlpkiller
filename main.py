@@ -25,9 +25,7 @@ def test_text2ngram():
     print(trigram_voc.sort_freqs[:10])
 
 
-if __name__ == '__main__':
-    # test_text2ngram()
-
+def test_train_simple_rnn():
     batch_size, num_steps, max_tokens = 32, 35, 10
     # corpus, vocab = load_corpus_time_machine(max_tokens)
     train_iter, vocab = load_data_time_machine(batch_size, num_steps)
@@ -38,3 +36,6 @@ if __name__ == '__main__':
     net = RNNModel(rnn_layer, vocab_size=len(vocab))
     num_epochs, lr = 500, 1
     train_rnn(net, train_iter, vocab, lr, num_epochs, device='cpu')
+
+
+test_train_simple_rnn()
