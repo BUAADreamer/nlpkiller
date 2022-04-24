@@ -1,4 +1,5 @@
 from nlpkiller import *
+from torch import nn
 
 if __name__ == '__main__':
     # 1.下载读取字符串数据
@@ -21,3 +22,6 @@ if __name__ == '__main__':
     trigram_tokens = [triple for triple in zip(tokens[:-2], tokens[1:-1], tokens[2:])]
     trigram_voc = Vocabulary(trigram_tokens)
     print(trigram_voc.sort_freqs[:10])
+
+    num_hiddens = 256
+    rnn_layer = nn.RNN(len(vocab), num_hiddens)
