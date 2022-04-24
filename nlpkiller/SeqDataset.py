@@ -2,6 +2,8 @@ import random
 
 import torch
 
+from nlpkiller import tokenize, Vocabulary, Crawler
+
 
 def seq_data_iter_random(corpus, batch_size, num_steps):
     """使用随机抽样生成一个小批量子序列
@@ -43,3 +45,46 @@ def seq_data_iter_sequential(corpus, batch_size, num_steps):
         X = Xs[:, i: i + num_steps]
         Y = Ys[:, i: i + num_steps]
         yield X, Y
+
+
+def load_corpus_time_machine(max_tokens=-1):
+    """返回时光机器数据集的词元索引列表和词表
+    Defined in :numref:`sec_text_preprocessing`"""
+    url = 'http://d2l-data.s3-accelerate.amazonaws.com/' + 'timemachine.txt'
+    crawler = Crawler(url)
+    text = crawler.download_from_url()
+    lines = text.split('\n')
+    tokens = tokenize(lines, 'char')
+    vocab = Vocabulary(tokens)
+    # 因为时光机器数据集中的每个文本行不一定是一个句子或一个段落，
+    # 所以将所有文本行展平到一个列表中
+    corpus = [vocab[token] for line in tokens for token in line]
+    if max_tokens > 0:
+        corpus = corpus[:max_tokens]
+    return corpus, vocab
+
+
+class SeqDataLoader:
+    """加载序列数据的迭代器"""
+
+    def __init__(self, batch_size, num_steps, use_random_iter, max_tokens):
+        """Defined in :numref:`sec_language_model`"""
+        if use_random_iter:
+            self.data_iter_fn = seq_data_iter_random
+        else:
+            self.data_iter_fn = seq_data_iter_sequential
+        self.corpus, self.vocab = load_corpus_time_machine(max_tokens)
+        self.batch_size, self.num_steps = batch_size, num_steps
+
+    def __iter__(self):
+        return self.data_iter_fn(self.corpus, self.batch_size, self.num_steps)
+
+
+def load_data_time_machine(batch_size, num_steps,
+                           use_random_iter=False, max_tokens=10000):
+    """返回时光机器数据集的迭代器和词表
+    Defined in :numref:`sec_language_model`"""
+    data_iter = SeqDataLoader(
+        batch_size, num_steps, use_random_iter, max_tokens)
+    print(data_iter)
+    return data_iter, data_iter.vocab

@@ -36,6 +36,7 @@ class Vocabulary:
         # 抛弃词或者保留字词先初始化id
         self.idx2token = ['<unk>'] + reserved_tokens
         self.token2idx = {token: idx for idx, token in enumerate(self.idx2token)}
+        self.tokens = tokens
         # 对不是抛弃词的词语建立到数字索引的建立
         for token, freq in self.sort_freqs:
             if freq < min_freq: break
@@ -46,7 +47,7 @@ class Vocabulary:
     def __len__(self):
         return len(self.idx2token)
 
-    def __getitem__(self, item):
+    def __getitem__(self, tokens):
         if not isinstance(tokens, (list, tuple)):
             return self.token2idx[tokens]
         return [self.__getitem__(token) for token in tokens]
@@ -54,7 +55,7 @@ class Vocabulary:
     def idxs2tokens(self, indexs):
         if not isinstance(indexs, (list, tuple)):
             return self.idx2token[indexs]
-        return [self.idxstotokens(index) for index in indexs]
+        return [self.idx2token(index) for index in indexs]
 
     def count_freq(self, tokens):  # @save
         """统计词元的频率"""
