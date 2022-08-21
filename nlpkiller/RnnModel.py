@@ -58,6 +58,7 @@ def predict_rnn(prefix, num_preds, net, vocab, device):
     get_input = lambda: torch.reshape(torch.tensor(
         [outputs[-1]], device=device), (1, 1))
     for y in prefix[1:]:  # 预热期
+        # 每次输入一个单词，预测下一个单词
         _, state = net(get_input(), state)
         outputs.append(vocab[y])
     for _ in range(num_preds):  # 预测num_preds步

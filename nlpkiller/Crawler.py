@@ -15,15 +15,16 @@ class Crawler:
         if url == '':
             url = self.url
         if request_type == 'get':
-            file_path = 'data\\' + filename + '.txt'
+            file_path = 'data/' + filename + '.txt'
             # print(file_path)
             if cache:
                 if os.path.exists(file_path):
-                    return open(file_path).read()
+                    return open(file_path, encoding='utf-8').read()
                 else:
                     res = requests.get(url).content.decode()
-                    open(file_path, 'w').write(res)
-                    return res
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                        f.write(res)
+                        return f.read()
             else:
                 res = requests.get(url).content.decode()
                 return res
