@@ -6,3 +6,6 @@ from nlpkiller.RnnBaseNone import *
 from nlpkiller.TextPreprocess import *
 from nlpkiller.EncoderDecoder import *
 from nlpkiller.Utils import *
+from nlpkiller.Attention import *
+from nlpkiller.Word2Vec import *
+from nlpkiller.BERT import *
